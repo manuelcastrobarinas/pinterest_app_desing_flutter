@@ -15,32 +15,37 @@ class PinterestButton {
 class PinterestMenu extends StatelessWidget {
 
   final List<PinterestButton> items = [
-    PinterestButton(icon: Icons.pie_chart, onPressed: () {}),
-    PinterestButton(icon: Icons.search, onPressed: () {}),
-    PinterestButton(icon: Icons.notifications, onPressed: () {}),
-    PinterestButton(icon: Icons.supervised_user_circle_rounded, onPressed: () {}),
+    PinterestButton(icon: Icons.pie_chart, onPressed: () {print("adsadasdsadadentro");}),
+    PinterestButton(icon: Icons.search, onPressed: () {print("adsadasdsadadentro");}),
+    PinterestButton(icon: Icons.notifications, onPressed: () {print("adsadasdsadadentro");}),
+    PinterestButton(icon: Icons.supervised_user_circle_rounded, onPressed: () {print("adsadasdsadadentro");}),
   ];
 
   PinterestMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final menuProvider = Provider.of<MenuProvider>(context).showMenu;
     return ChangeNotifierProvider(
       create: (BuildContext context) =>  MenuProvider(),
-      child : Container(
-        width : 240,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(50),
-          boxShadow   : const <BoxShadow> [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-            )
-          ]
+      child : AnimatedOpacity( //TODO: TENER EN CUENTA QUE ESTO SOLO CAMBIA LA OPACIDAD MAS NO LO OCULTA EN VERDAD
+        duration: const Duration(milliseconds: 300),
+        opacity : (menuProvider) ? 1 : 0,
+        child: Container(
+          width : 240,
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(50),
+            boxShadow   : const <BoxShadow> [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+              )
+            ]
+          ),
+          child: _MenuItems(items),
         ),
-        child: _MenuItems(items),
       ),
     );
   }
@@ -70,12 +75,11 @@ class _PinterestMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menuProvider = Provider.of<MenuProvider>(context);
-    return GestureDetector(
-      behavior  : HitTestBehavior.translucent,
-      onTap: () {
+    return  GestureDetector(
+      onTap: menuProvider.showMenu ? () {
         menuProvider.selectedItem = index;
-        item.onPressed();
-      },
+        item.onPressed(); 
+      } : null,
       child: SizedBox(
         child: Icon(
           item.icon,
